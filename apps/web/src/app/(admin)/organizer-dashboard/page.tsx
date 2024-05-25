@@ -29,45 +29,8 @@ const OrganizerDashboardPage = () => {
     {
       name: 'jan',
       data: [
-        { title: 'Ticket Sales', name: 'sales', value: 12 },
-        {
-          title: 'Attendance',
-          name: 'attendance',
-          value: 10,
-        },
-      ],
-    },
-    {
-      name: 'feb',
-      data: [
-        { title: 'Ticket Sales', name: 'sales', value: 16 },
-        {
-          title: 'Attendance',
-          name: 'attendance',
-          value: 12,
-        },
-      ],
-    },
-    {
-      name: 'mar',
-      data: [
-        { title: 'Ticket Sales', name: 'sales', value: 33 },
-        {
-          title: 'Attendance',
-          name: 'attendance',
-          value: 28,
-        },
-      ],
-    },
-    {
-      name: 'apr',
-      data: [
-        { title: 'Ticket Sales', name: 'sales', value: 18 },
-        {
-          title: 'Attendance',
-          name: 'attendance',
-          value: 15,
-        },
+        { title: 'Ticket Sales', name: 'sales', value: 0 },
+        { title: 'Ticket Sales', name: 'sales', value: 0 },
       ],
     },
   ];
@@ -158,7 +121,7 @@ const OrganizerDashboardPage = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {data.data.data.totalEvents._all}
+                    {data.data.data.totalEvents}
                   </div>
                   <p className="text-xs text-muted-foreground">
                     5 events since this month
@@ -173,7 +136,13 @@ const OrganizerDashboardPage = () => {
                 </CardHeader>
                 <CardContent className="pl-2">
                   {/* Chart Statistic */}
-                  <Overview data={chartData} />
+                  <Overview
+                    data={
+                      data.data.data.chartStatisticData.length > 1
+                        ? data.data.data.chartStatisticData
+                        : chartData
+                    }
+                  />
                 </CardContent>
               </Card>
               <Card className="col-span-4">

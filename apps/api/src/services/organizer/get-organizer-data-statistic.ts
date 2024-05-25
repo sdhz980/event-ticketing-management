@@ -1,8 +1,27 @@
 import prisma from '@/prisma';
 
+const monthNames = [
+  'jan',
+  'feb',
+  'mar',
+  'apr',
+  'may',
+  'jun',
+  'jul',
+  'aug',
+  'sep',
+  'oct',
+  'nov',
+  'dec',
+];
+
 export const getOrganizerDataStatisticService = async (id: number) => {
   try {
-    var date = new Date();
+    const allEvents = await prisma.event.findMany({
+      where: {
+        userId: id,
+      },
+    });
     const totalEvents = await prisma.event.count({
       where: {
         userId: id,
@@ -10,9 +29,9 @@ export const getOrganizerDataStatisticService = async (id: number) => {
           role: 'organizer',
         },
       },
-      select: {
-        _all: true,
-      },
+      // select: {
+      //   _all: true,
+      // },
     });
     const averageTicketPrice = await prisma.event.aggregate({
       _avg: {
@@ -25,6 +44,7 @@ export const getOrganizerDataStatisticService = async (id: number) => {
         },
       },
     });
+
     const ticketSoldOverall = await prisma.transaction.count({
       where: {
         event: {
@@ -33,6 +53,7 @@ export const getOrganizerDataStatisticService = async (id: number) => {
             role: 'organizer',
           },
         },
+        status: 'success',
       },
     });
     const ticketRevenue = await prisma.transaction.aggregate({
@@ -46,20 +67,79 @@ export const getOrganizerDataStatisticService = async (id: number) => {
             role: 'organizer',
           },
         },
+        status: 'success',
       },
     });
-    const soldInThisMonth = await prisma.event.findMany({
+    const soldInThisMonth = await prisma.transaction.count({
       where: {
-        // userId: id,
-        // user: {
-        //   role: 'organizer',
-        // },
-        startDate: {
-          gte: new Date(date.getFullYear(), date.getMonth(), 1),
-          lte: new Date(date.getFullYear(), date.getMonth() + 1, 0),
+        event: {
+          userId: id,
         },
       },
     });
+
+    const chartMonth = await prisma.transaction.findMany({
+      where: {
+        event: {
+          userId: id,
+        },
+      },
+      include: {
+        event: true,
+      },
+    });
+
+    // {
+    //   name: 'jan',
+    //   data: [
+    //     { title: 'Ticket Sales', name: 'sales', value: 12 },
+    //     {
+    //       title: 'Attendance',
+    //       name: 'attendance',
+    //       value: 10,
+    //     },
+    //   ],
+    // },
+
+    const objChart: any = {
+      jan: {},
+      feb: {},
+      mar: {},
+      apr: {},
+      may: {},
+      jun: {},
+      jul: {},
+      aug: {},
+      sep: {},
+      oct: {},
+      nov: {},
+      dec: {},
+    };
+    const chartStatisticData: any = [];
+    chartMonth.map((val) => {
+      if (
+        !objChart[monthNames[val.createdAt.getMonth()]][
+          val.event.title.replace(' ', '')
+        ]
+      )
+        return (objChart[monthNames[val.createdAt.getMonth()]][
+          val.event.title.replace(' ', '')
+        ] = 1);
+      objChart[monthNames[val.createdAt.getMonth()]][
+        val.event.title.replace(' ', '')
+      ] =
+        objChart[monthNames[val.createdAt.getMonth()]][
+          val.event.title.replace(' ', '')
+        ] + 1;
+    });
+    Object.keys(objChart).map((key) => {
+      const tmpObj: any = { name: key, data: [] };
+      Object.keys(objChart[key]).map((val) => {
+        tmpObj.data.push({ title: val, name: val, value: objChart[key][val] });
+      });
+      chartStatisticData.push(tmpObj)
+    });
+
     return {
       message: 'Data Found',
       data: {
@@ -68,6 +148,7 @@ export const getOrganizerDataStatisticService = async (id: number) => {
         ticketSoldOverall,
         ticketRevenue,
         soldInThisMonth,
+        chartStatisticData,
       },
     };
   } catch (err) {

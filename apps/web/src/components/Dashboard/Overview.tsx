@@ -36,6 +36,14 @@ export function Overview({ data }: { data: DataProps[] }) {
     });
     return objVal;
   });
+  const xAxisParse: any = {};
+  data.map((key) => {
+    key.data.map((val) => {
+      xAxisParse[val.name] = val.title;
+    });
+  });
+
+  console.log('xAxis', xAxisParse);
 
   return (
     <ResponsiveContainer width="100%" height={350}>
@@ -45,17 +53,19 @@ export function Overview({ data }: { data: DataProps[] }) {
         <YAxis stroke="#000000" strokeWidth={2} />
         <Tooltip />
         <Legend />
-        {data[0].data.map((val, indx) => {
-          return (
-            <Line
+        {
+          Object.keys(xAxisParse).map((val)=> {
+            return (
+              <Line
               type="monotone"
-              name={val.title}
+              name={val}
               strokeWidth={2}
-              dataKey={val.name}
-              stroke={color[indx].color}
+              dataKey={val}
+              stroke={color[Math.floor(Math.random()*2.9)].color}
             />
-          );
-        })}
+            )
+          })
+        }
       </LineChart>
     </ResponsiveContainer>
   );

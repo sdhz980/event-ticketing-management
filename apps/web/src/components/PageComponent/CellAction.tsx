@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, User } from 'lucide-react';
 import { AlertModal } from '@/components/Common/AlertModal';
 import { Event } from '@/app/types/event.type';
 import useDeleteEvent from '@/app/hooks/api/event/useDeleteEvent';
@@ -39,7 +39,29 @@ export function CellAction({ data }: CellActionProps) {
   };
 
   return (
-    <div className="flex justify-center space-x-2">
+    <div className="flex justify-center">
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-secondary"
+              onClick={() => {
+                router.push(
+                  `/organizer-dashboard/event/manage-event/${data.id}/list`,
+                );
+              }}
+            >
+              <User className="h-4 w-4 text-foreground" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Attendee List</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>

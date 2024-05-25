@@ -36,9 +36,15 @@ interface DataStatisticResponse {
         };
       };
       ticketSoldOverall: number;
-      totalEvents: {
-        _all: number;
-      };
+      totalEvents: number;
+      chartStatisticData: {
+        name: string;
+        data: {
+          name: string;
+          title: string;
+          value: number;
+        }[];
+      }[];
     };
   };
 }
@@ -55,8 +61,9 @@ const useGetOrganizerDataStatistic = () => {
         },
         ticketRevenue: { _sum: { total: 0 } },
         ticketSoldOverall: 0,
-        totalEvents: { _all: 0 },
+        totalEvents: 0,
         soldInThisMonth: [],
+        chartStatisticData: [],
       },
       message: '',
     },

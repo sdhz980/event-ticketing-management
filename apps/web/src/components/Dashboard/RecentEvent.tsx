@@ -51,7 +51,7 @@ export function RecentEvent() {
                   </p>
                 </div>
                 <div className="ml-auto font-medium">
-                  {formatDate(value.startDate)}
+                  {formatDate(new Date(value.startDate))}
                 </div>
               </div>
             </>
