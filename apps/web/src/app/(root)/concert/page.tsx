@@ -25,7 +25,7 @@ const Concert = () => {
   const [page, setPage] = useState<number>(1);
   const { data: events, meta } = useGetEvents({
     page,
-    take: 3,
+    take: 10,
   });
 
   const handleChangePaginate = ({ selected }: { selected: number }) => {
@@ -34,7 +34,7 @@ const Concert = () => {
 
   return (
     <>
-      <div className="w-full bg-gray-100 dark:bg-gray-950 py-6 px-4 md:px-6">
+      <div className="w-full py-6 px-4 md:px-6">
         <div className="container mx-auto flex items-center gap-4">
           <div className="flex-1 relative">
             <Autocomplete />
@@ -99,23 +99,25 @@ const Concert = () => {
           </DropdownMenu>
         </div>
       </div>
-      <div className="container mx-auto grid grid-cols-1 gap-8 py-8 md:grid-cols-4">
+      <div id='list-events' className="container mx-auto grid grid-cols-1 gap-8 py-8 md:grid-cols-4">
         {events.map((event, index) => {
           return (
-            <EventCard
-              key={index}
-              title={event.title}
-              description={event.description}
-              category={event.eventCategory[0].category.title}
-              price={event.price}
-              booked={`Booked: ${String(event.booked)}`}
-              limit={`Available Seats: ${String(event.limit-event.booked)}`}
-              startDate={new Date(event.startDate)}
-              endDate={new Date(event.endDate)}
-              time={event.time}
-              imageUrl={appConfig.baseUrl + `/assets${event.thumbnail}`}
-              eventId={event.id}
-            />
+            <div id={'event-'+String(index)}>
+              <EventCard
+                key={index}
+                title={event.title}
+                description={event.description}
+                category={event.eventCategory[0].category.title}
+                price={event.price}
+                booked={`Booked: ${String(event.booked)}`}
+                limit={`Available Seats: ${String(event.limit-event.booked)}`}
+                startDate={new Date(event.startDate)}
+                endDate={new Date(event.endDate)}
+                time={event.time}
+                imageUrl={appConfig.baseUrl + `/assets${event.thumbnail}`}
+                eventId={event.id}
+              />
+            </div>
           );
         })}
       </div>

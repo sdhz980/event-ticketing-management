@@ -10,11 +10,11 @@ export default function Component() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
-        <section className="w-full py-24 bg-gray-100 dark:bg-gray-800">
+        <section className="w-full py-24 bg-background">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Welcome to TuneTix</h1>
-              <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+              <p className="max-w-[900px] text-primary md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
               Your Ultimate Gateway to Unforgettable Entertainment.
               </p>
               <Autocomplete />
@@ -27,57 +27,57 @@ export default function Component() {
               <div className="flex flex-col items-center space-y-4 text-center">
                 <RocketIcon className="h-12 w-12" />
                 <h2 className="text-2xl font-bold">Fast Update</h2>
-                <p className="text-gray-500 dark:text-gray-400">We ensure quick update of your trend events, instantly.</p>
+                <p className="text-primary">We ensure quick update of your trend events, instantly.</p>
               </div>
               <div className="flex flex-col items-center space-y-4 text-center">
                 <ShieldIcon className="h-12 w-12" />
                 <h2 className="text-2xl font-bold">Secure Payment</h2>
-                <p className="text-gray-500 dark:text-gray-400">We provide secure payment options for our customers.</p>
+                <p className="text-primary">We provide secure payment options for our customers.</p>
               </div>
               <div className="flex flex-col items-center space-y-4 text-center">
                 <SettingsIcon className="h-12 w-12" />
                 <h2 className="text-2xl font-bold">24/7 Support</h2>
-                <p className="text-gray-500 dark:text-gray-400">We provide 24/7 support to all our customers.</p>
+                <p className="text-primary">We provide 24/7 support to all our customers.</p>
               </div>
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-background">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter text-center sm:text-4xl md:text-5xl">Testimonials</h2>
             <div className="grid gap-6 lg:grid-cols-3 lg:gap-12 mt-8">
-              <Card>
-                <CardContent className="flex flex-col items-center space-y-4 text-center">
+              <Card className="border-primary">
+                <CardContent className="flex flex-col items-center space-y-4 py-4 text-center">
                   <Avatar>
                     <AvatarImage alt="User" src="/placeholder-avatar.jpg" />
                     <AvatarFallback>JP</AvatarFallback>
                   </Avatar>
-                  <h3 className="text-xl font-bold">John Doe</h3>
-                  <p className="text-gray-500 dark:text-gray-400">
+                  <h3 className="text-xl text-primary font-bold">John Doe</h3>
+                  <p className="text-primary">
                     "TuneTix provides the best service in the market. I'm very satisfied with their service."
                   </p>
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="flex flex-col items-center space-y-4 text-center">
+              <Card className="border-primary">
+                <CardContent className="flex flex-col items-center space-y-4 py-4 text-center">
                   <Avatar>
                     <AvatarImage alt="User" src="/placeholder-avatar.jpg" />
                     <AvatarFallback>JP</AvatarFallback>
                   </Avatar>
                   <h3 className="text-xl font-bold">Jane Doe</h3>
-                  <p className="text-gray-500 dark:text-gray-400">
+                  <p className="text-primary">
                     "I love TuneTix. They are of high quality and affordable."
                   </p>
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="flex flex-col items-center space-y-4 text-center">
+              <Card className="border-primary">
+                <CardContent className="flex flex-col items-center space-y-4 py-4 text-center">
                   <Avatar>
                     <AvatarImage alt="User" src="/placeholder-avatar.jpg" />
                     <AvatarFallback>JP</AvatarFallback>
                   </Avatar>
-                  <h3 className="text-xl font-bold">Jim Doe</h3>
-                  <p className="text-gray-500 dark:text-gray-400">
+                  <h3 className="text-xl text-primary font-bold">Jim Doe</h3>
+                  <p className="text-primary">
                     "The customer service from TuneTix is top-notch. They are always available to help."
                   </p>
                 </CardContent>

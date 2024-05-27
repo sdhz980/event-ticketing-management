@@ -80,7 +80,7 @@ const RegisterForm = () => {
               href="/login/forgot-password"
               className="text-xs mx-auto text-center"
             >
-              Forgot your password?
+              <Button variant="link">Forgot your password?</Button>
             </Link>
 
             <div className="relative">

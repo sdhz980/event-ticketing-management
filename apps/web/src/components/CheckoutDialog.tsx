@@ -24,6 +24,37 @@ import { useCreateTransactionEvent } from '@/app/hooks/api/user/useTransactionEv
 import { useAppSelector } from '@/app/redux/hook';
 import { Switch } from './ui/switch';
 
+const calculateVoucher = (
+  price: number,
+  qty: number,
+  discount: number,
+  maxDiscount: number,
+): number => {
+  if ((price * qty) / discount >= maxDiscount) return maxDiscount;
+  return (price * qty) / discount;
+};
+
+const calculateTotal = (
+  isVoucherUse: boolean,
+  isPointsUse: boolean,
+  percentage: number,
+  maxDiscount: number,
+  points: number,
+  price: number,
+  qty: number,
+): number => {
+  if (isPointsUse && isVoucherUse)
+    return (
+      price * qty -
+      (calculateVoucher(price, qty, 1, points) +
+        calculateVoucher(price, qty, percentage, maxDiscount))
+    );
+  if (isVoucherUse)
+    return price * qty - calculateVoucher(price, qty, percentage, maxDiscount);
+  if (isPointsUse) return price * qty - calculateVoucher(price, qty, 1, points);
+  return price * qty;
+};
+
 const CheckoutDialog = ({ eventData }: { eventData: Event }) => {
   const router = useRouter();
   const user = useAppSelector((state) => state.user);
@@ -35,6 +66,7 @@ const CheckoutDialog = ({ eventData }: { eventData: Event }) => {
   const [voucher, setVoucher] = useState<number | null>(0);
   const [reward, setReward] = useState<number | null>(0);
   const [percentage, setPercentage] = useState<number>(0);
+  const [maxDiscount, setMaxDiscount] = useState<number>(0);
   const [usePoint, setUsePoint] = useState(false);
   const priceFormat = new Intl.NumberFormat('id-ID', {
     currency: 'IDR',
@@ -60,10 +92,14 @@ const CheckoutDialog = ({ eventData }: { eventData: Event }) => {
       userId: user.userId,
       voucherId: voucher,
       rewardId: reward,
+      isUsePoint: usePoint
+        ? calculateVoucher(eventData.price, qty, 1, user.points)
+        : 0,
     };
-    createTransactionEvent(data).then((res)=>{
-      router.push(`/profile/transaction/${res.data}`)
-    })
+    alert(JSON.stringify(data));
+    createTransactionEvent(data).then((res) => {
+      router.push(`/profile/transaction/${res.data}`);
+    });
   };
 
   if (!event) {
@@ -131,6 +167,7 @@ const CheckoutDialog = ({ eventData }: { eventData: Event }) => {
                               setReward(value.rewardId);
                               setVoucher(null);
                               setPercentage(value.reward.percentage);
+                              setMaxDiscount(Number(value.reward.max_nominal));
                             }}
                           >
                             <Button className="w-full flex justify-between h-20">
@@ -158,6 +195,7 @@ const CheckoutDialog = ({ eventData }: { eventData: Event }) => {
                               setVoucher(value.voucherId);
                               setReward(null);
                               setPercentage(value.voucher.nominal);
+                              setMaxDiscount(Number(value.voucher.limit));
                             }}
                           >
                             <Button className="w-full flex justify-between h-20">
@@ -199,36 +237,41 @@ const CheckoutDialog = ({ eventData }: { eventData: Event }) => {
           <Card>
             <CardContent className="flex p-4">
               <div className="flex flex-col">
-                <Label className="text-xl">
-                  Total Price :{' '}
-                  {priceFormat.format(
-                    usePoint
-                      ? user.points > eventData.price * qty
-                        ? 0
-                        : eventData.price * qty - user.points
-                      : eventData.price * qty,
-                  )}
-                </Label>
                 <Label className="min-h-[14px]">
                   {voucher || reward
-                    ? `Discount :${priceFormat.format(
-                        ((eventData.price * qty) / 100) * percentage,
+                    ? `Discount = ${priceFormat.format(
+                        calculateVoucher(
+                          eventData.price,
+                          qty,
+                          percentage,
+                          maxDiscount,
+                        ),
                       )}`
                     : ''}
                 </Label>
                 <Label className="min-h-[14px]">
                   {usePoint
                     ? `
-                    Point used :
+                    Point used =
                     ${priceFormat.format(
-                      user.points < eventData.price
-                        ? user.points
-                        : user.points - eventData.price * qty < 0
-                          ? user.points
-                          : user.points - eventData.price * qty,
+                      calculateVoucher(eventData.price, qty, 1, user.points),
                     )}
                     `
                     : ''}
+                </Label>
+                <Label className="text-xl">
+                  Total Price ={' '}
+                  {priceFormat.format(
+                    calculateTotal(
+                      Boolean(voucher || reward),
+                      usePoint,
+                      percentage,
+                      maxDiscount,
+                      user.points,
+                      eventData.price,
+                      qty,
+                    ),
+                  )}
                 </Label>
               </div>
             </CardContent>

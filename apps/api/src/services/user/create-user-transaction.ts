@@ -8,7 +8,7 @@ interface CreateUserTransaction {
   voucherId: number;
   rewardId: number;
   userId: number;
-  isUsePoint: boolean;
+  isUsePoint: string;
 }
 
 const functionDiscount = (
@@ -98,7 +98,7 @@ export const createUserTransactionService = async function (
             qty: body.qty,
             status: 'pending',
             total: priceTotalVoucher || priceTotalReward,
-            pointUsed: body.isUsePoint ? user.points : 0,
+            pointUsed: body.isUsePoint ? Number(body.isUsePoint) : 0,
             userId: user.id,
             uuid: randomstring.generate(20).toLowerCase(),
           },
@@ -116,6 +116,19 @@ export const createUserTransactionService = async function (
             },
           },
         });
+
+        if (body.isUsePoint) {
+          const updatePoint = await tx.user.update({
+            where: {
+              id: body.userId,
+            },
+            data: {
+              points: {
+                decrement: Number(body.isUsePoint),
+              },
+            },
+          });
+        }
 
         if (voucherCard) {
           const userVoucherTransaction = await tx.userVoucher.findFirst({

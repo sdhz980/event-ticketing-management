@@ -40,30 +40,37 @@ const EventCard: FC<EventCardProps> = ({
 
   return (
     <Link href={`/event/${eventId}`}>
-      <Card className="w-full max-w-[300px]">
-      <div className="relative overflow-hidden rounded-lg">
-        <img
-          alt="thumbnail"
-          className="aspect-[3/2] w-full object-cover"
-          height="120"
-          src={imageUrl}
-          width="180"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-        <div className="absolute bottom-2 left-2 text-white">
-          <div className="text-sm font-semibold">{title}</div>
-          <div className="text-xs">{format(startDate, 'dd MMMM yyyy')} - {format(endDate, 'dd MMMM yyyy')}, {time}</div>
+      <Card className="w-full min-w-[250px]">
+        <div className="relative overflow-hidden rounded-sm">
+          <img
+            alt="thumbnail"
+            className="aspect-[3/2] w-full object-cover"
+            height="120"
+            src={imageUrl}
+            width="180"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+          <div className="absolute bottom-2 left-2">
+            <div className="text-sm text-white font-semibold">{title}</div>
+            <div className="text-xs text-white">
+              {format(startDate, 'dd MMMM yyyy')} -{' '}
+              {format(endDate, 'dd MMMM yyyy')}, {time}
+            </div>
+          </div>
         </div>
-      </div>
-      <CardContent className="space-y-2 p-4">
-        <div className="">
-          <div className="text-xs text-gray-500 dark:text-gray-400">{description}</div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">{limit}</div>
-          <div className="text-base font-bold text-right">{formattedPrice}</div>
-        </div>
-        <div><Button>Buy</Button></div>
-      </CardContent>
-    </Card>
+        <CardContent className="space-y-2 p-4">
+          <div className="">
+            <div className="text-xs text-primary">{description}</div>
+            <div className="text-xs text-primary">{limit}</div>
+          </div>
+          <div className='flex flex-row justify-between items-center'>
+            <Button>Buy</Button>
+            <div className="text-base font-bold text-right">
+              {formattedPrice}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </Link>
   );
 };

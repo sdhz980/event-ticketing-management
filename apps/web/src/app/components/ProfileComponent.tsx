@@ -50,9 +50,7 @@ export default function ProfileComponent({
   const [stateEyeCurrent, setStateEyeCurrent] = useState(false);
   const [profileImage, setProfileImage] = useState<File[]>();
   const [stateEyeNew, setStateEyeNew] = useState(false);
-  const pointsFormat = new Intl.NumberFormat('en-IN', {
-    maximumSignificantDigits: 3,
-  });
+  const pointsFormat = new Intl.NumberFormat('id-ID');
   const inputCurrentPasswordRef = useRef<HTMLInputElement>(null);
   const inputNewPasswordRef = useRef<HTMLInputElement>(null);
   const dropzoneRef: any = useRef();

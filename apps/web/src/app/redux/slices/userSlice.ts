@@ -20,11 +20,11 @@ const initialState: Pick<
   firstName: '',
   lastName: '',
   pictureId: '',
-  points : 0,
+  points: 0,
   email: '',
   role: '',
   token: '',
-  thumbnail : [],
+  thumbnail: [],
   referralCode: '',
   detail: {
     bio: '',
@@ -57,12 +57,16 @@ export const userSlice = createSlice({
       state.lastName = '';
       state.email = '';
     },
+    editPoints: (state, action: PayloadAction<Pick<User,|"points">>) => {
+      state.points = action.payload.points;
+    },
     getUserDetail: (state, action: PayloadAction<User>) => {
       state.detail = action.payload.detail;
     },
   },
 });
 
-export const { loginAction, logoutAction, getUserDetail } = userSlice.actions;
+export const { loginAction, logoutAction, getUserDetail, editPoints } =
+  userSlice.actions;
 
 export default userSlice.reducer;

@@ -22,10 +22,12 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
 const UpcomingEvents = () => {
-  const { data: events } = useGetEvents({});
+  const { data: events } = useGetEvents({
+    take: 8,
+  });
   const router = useRouter();
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-background border-2 border-muted">
       <div className="container px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter text-center sm:text-4xl md:text-5xl">
           Upcoming Events
@@ -34,9 +36,11 @@ const UpcomingEvents = () => {
         <Carousel>
           <CarouselContent>
             <CarouselItem>
-              <div className="container mx-auto grid grid-cols-1 gap-8 py-14 md:grid-cols-4">
+              <div className="container mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(100%,15em),1fr))] w-full gap-4 py-10">
                 {events.map((event, index) => {
                   return (
+                    <div>
+
                     <EventCard
                       key={index}
                       title={event.title}
@@ -52,7 +56,8 @@ const UpcomingEvents = () => {
                       time={event.time}
                       imageUrl={appConfig.baseUrl + `/assets${event.thumbnail}`}
                       eventId={event.id}
-                    />
+                      />
+                      </div>
                   );
                 })}
               </div>

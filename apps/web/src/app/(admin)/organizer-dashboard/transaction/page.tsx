@@ -293,9 +293,19 @@ const DashboardTransactionPage = () => {
                                 </TableBody>
                                 <TableFooter>
                                   <TableRow>
-                                    <TableCell colSpan={3}>Total</TableCell>
-                                    <TableCell className="text-right">
-                                      $2,500.00
+                                    <TableCell colSpan={4}>Total</TableCell>
+                                    <TableCell className="text-left">
+                                      {priceFormat.format(
+                                        data.reduce(
+                                          (prev, curr) =>
+                                            prev +
+                                            curr.transaction.reduce(
+                                              (pre, cur) => pre + cur.total,
+                                              0,
+                                            ),
+                                          0,
+                                        ),
+                                      )}
                                     </TableCell>
                                   </TableRow>
                                 </TableFooter>
