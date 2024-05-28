@@ -1,7 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
-import { ThemeProvider } from '../providers/ThemeProvider';
 
 export default function RootLayout({
   children,
@@ -11,11 +10,6 @@ export default function RootLayout({
   return (
     <>
       <body>
-        <ThemeProvider
-        attribute='class'
-        defaultTheme='system'
-        enableSystem
-        >
           <div>
             <Navbar />
             <main className="bg-secondary/10 min-h-[calc(100vh-128px)]">
@@ -23,7 +17,6 @@ export default function RootLayout({
             </main>
           </div>
           <Footer />
-        </ThemeProvider>
       </body>
     </>
   );

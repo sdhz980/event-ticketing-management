@@ -25,6 +25,7 @@ import { useRouter } from 'next/navigation';
 
 const CreateEventForm = () => {
   const router = useRouter();
+  const [alertErrorModalOpen, setAlertErrorModalOpen] = useState(false);
   const [alertModalOpen, setAlertModalOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -59,13 +60,18 @@ const CreateEventForm = () => {
     validationSchema: CreateEventFormValidation,
     onSubmit: (values) => {
       setProgress(true);
-      createEvent(values).finally(() => {
-        setProgress(false);
-        setSuccessModalOpen(true);
-        setTimeout(() => {
-          router.push('/organizer-dashboard')
-        }, 1000);
-      });
+      createEvent(values)
+        .then(() => {
+          setProgress(false);
+          setSuccessModalOpen(true);
+          setTimeout(() => {
+            router.push('/organizer-dashboard');
+          }, 1000);
+        })
+        .catch(() => {
+          setAlertErrorModalOpen(true);
+          setProgress(false);
+        });
       console.log(values);
     },
   });
@@ -319,6 +325,13 @@ const CreateEventForm = () => {
           </Button>
         </CardFooter>
       </Card>
+      <DialogAlert
+        title="Errors"
+        description={`Something is error with the server!`}
+        name={''}
+        isOpen={alertErrorModalOpen}
+        onClose={() => setAlertErrorModalOpen(false)}
+      />
       <DialogAlert
         title="Errors"
         description={`Please Input Forms Correctly!`}

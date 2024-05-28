@@ -88,7 +88,8 @@ export const postOrganizerTransactionApprovalService = async (
               },
             });
           }
-          if (transaction.transactionUserReward.length>1) {
+          if (transaction.transactionUserReward.length) {
+            
             const rewardUsed = await tx.userReward.findFirst({
               where: {
                 id: transaction.transactionUserReward[0].userRewardId,

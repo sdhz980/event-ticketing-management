@@ -46,7 +46,7 @@ export default function Component() {
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter text-center sm:text-4xl md:text-5xl">Testimonials</h2>
             <div className="grid gap-6 lg:grid-cols-3 lg:gap-12 mt-8">
-              <Card className="border-primary">
+              <Card className="bg-background ">
                 <CardContent className="flex flex-col items-center space-y-4 py-4 text-center">
                   <Avatar>
                     <AvatarImage alt="User" src="/placeholder-avatar.jpg" />
@@ -58,7 +58,7 @@ export default function Component() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-primary">
+              <Card className="bg-background ">
                 <CardContent className="flex flex-col items-center space-y-4 py-4 text-center">
                   <Avatar>
                     <AvatarImage alt="User" src="/placeholder-avatar.jpg" />
@@ -70,7 +70,7 @@ export default function Component() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="border-primary">
+              <Card className="bg-background ">
                 <CardContent className="flex flex-col items-center space-y-4 py-4 text-center">
                   <Avatar>
                     <AvatarImage alt="User" src="/placeholder-avatar.jpg" />

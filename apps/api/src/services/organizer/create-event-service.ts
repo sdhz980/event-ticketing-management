@@ -10,7 +10,10 @@ interface createEventParams extends Omit<Event, 'locationId'> {
   country: string;
 }
 
-export const createEventService = async (params: createEventParams,file: Express.Multer.File,) => {
+export const createEventService = async (
+  params: createEventParams,
+  file: Express.Multer.File,
+) => {
   try {
     const userId = Number(params.userId);
     const price = Number(params.price);
@@ -28,11 +31,9 @@ export const createEventService = async (params: createEventParams,file: Express
       country,
       category,
     } = params;
-
     const dateNow = new Date();
 
     const eventTransaction = await prisma.$transaction(async (tx) => {
-
       const isUserOrganizer = await prisma.user.findFirst({
         where: {
           AND: {
@@ -131,7 +132,6 @@ export const createEventService = async (params: createEventParams,file: Express
           updatedAt: dateNow,
         },
       });
-
     });
 
     return {

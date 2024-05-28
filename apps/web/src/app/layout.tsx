@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/app/providers/AuthProvider';
 import StoreProvider from '@/app/providers/StoreProvider';
+import { ThemeProvider } from './providers/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'TuneTix',
@@ -17,7 +18,11 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <StoreProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              {children}
+            </ThemeProvider>
+          </AuthProvider>
         </StoreProvider>
       </body>
     </html>

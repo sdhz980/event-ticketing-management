@@ -30,12 +30,17 @@ import { TimePicker } from '../Dashboard/TimePicker';
 import Image from 'next/image';
 import { appConfig } from '@/utils/config';
 
-const EventDetailManage = ({ eventData }: { eventData: Event }) => {
+interface EventDetail extends Omit<Event, 'startDate' | 'endDate'> {
+  startDate: Date;
+  endDate: Date;
+}
+
+const EventDetailManage = ({ eventData }: { eventData: EventDetail }) => {
   const router = useRouter();
   const [alertModalOpen, setAlertModalOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [event, setEvent] = useState<Event>();
+  const [event, setEvent] = useState<EventDetail>();
   const [progress, setProgress] = useState(false);
   const { createEvent } = useCreateEvent();
   useEffect(() => {

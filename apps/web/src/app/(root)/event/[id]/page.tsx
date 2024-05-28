@@ -21,6 +21,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
 const EventDetail = ({ params }: { params: { id: string } }) => {
   const { role } = useAppSelector((state) => state.user);
   const { event, isLoading } = useGetEvent(Number(params.id));
@@ -41,8 +42,8 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <section className="w-full px-4 py-4">
-      <Card>
+    <section className="flex justify-center py-8 px-8">
+      <Card className="max-w-[800px] bg-background border-2">
         <CardHeader>
           <CardTitle className="text-4xl">{event.title}</CardTitle>
           <Label>Category : {event.eventCategory[0].category.title}</Label>
@@ -68,11 +69,8 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
           </Label>
         </CardHeader>
         <CardContent>
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-              <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
-                  {/* <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+          <div className="grid gap-8">
+            {/* <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                     {event.title}
                   </h1>
                   <div className="flex items-center space-x-4">
@@ -95,66 +93,77 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
                       {event.location.province},{event.location.country}
                     </span>
                   </div> */}
-                  <img
-                    alt="Event"
-                    className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square"
-                    height="550"
-                    src={`${appConfig.baseUrl}/assets${event.thumbnail}`}
-                    width="550"
-                  />
+            <Card className="overflow-hidden w-full h-auto max-h-[500px]">
+              <Image
+                alt="Event"
+                className="object-cover w-full h-auto"
+                height={1000}
+                src={`${appConfig.baseUrl}/assets${event.thumbnail}`}
+                width={1000}
+              />
+            </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Description</CardTitle>
-                    </CardHeader>
-                    <CardContent className=''>
-                      <p className='leading-7 [&:not(:first-child)]:mt-6'>{event.description} Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo amet quis consectetur nulla, eos illo repellendus laudantium. Quos corrupti, molestiae quisquam distinctio neque cupiditate harum quibusdam, at obcaecati animi quaerat? Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis ex quas hic, error optio doloribus natus voluptatum modi tenetur, porro fuga ipsa inventore exercitationem, possimus ratione quos! Quas, dolores. Ea! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Alias sunt, libero odio est molestias incidunt quos velit possimus rem sit modi, nihil quaerat quisquam eaque provident aperiam iusto. Eius, voluptatibus.</p>
-                    </CardContent>
-                  </Card>
-                  {/* <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+            <Card>
+              <CardHeader>
+                <CardTitle>Description</CardTitle>
+              </CardHeader>
+              <CardContent className="">
+                <p className="leading-7 [&:not(:first-child)]:mt-6 text-justify">
+                  {event.description} Lorem ipsum dolor sit amet consectetur
+                  adipisicing elit. Nemo amet quis consectetur nulla, eos illo
+                  repellendus laudantium. Quos corrupti, molestiae quisquam
+                  distinctio neque cupiditate harum quibusdam, at obcaecati
+                  animi quaerat? Lorem ipsum dolor sit amet consectetur
+                  adipisicing elit. Blanditiis ex quas hic, error optio
+                  doloribus natus voluptatum modi tenetur, porro fuga ipsa
+                  inventore exercitationem, possimus ratione quos! Quas,
+                  dolores. Ea! Lorem, ipsum dolor sit amet consectetur
+                  adipisicing elit. Alias sunt, libero odio est molestias
+                  incidunt quos velit possimus rem sit modi, nihil quaerat
+                  quisquam eaque provident aperiam iusto. Eius, voluptatibus.
+                </p>
+              </CardContent>
+            </Card>
+            {/* <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
                 {event.location.city}
               </p> */}
-                  {/* <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+            {/* <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
                 {event.description}
               </p> */}
-                  {/* <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+            {/* <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
                 {priceFormat.format(event.price)}
               </p> */}
-                </div>
-                {role !== 'organizer' ? (
-                  <CheckoutDialog eventData={event} />
-                ) : (
-                  <Dialog>
-                    <DialogTrigger className="w-full">
-                      <Button variant="secondary" className="w-full">
-                        Checkouts
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Warning</DialogTitle>
-                        <Label>You are signed as organizer.</Label>
-                      </DialogHeader>
-                      <Label className="text-base">
-                        As an organizer you are probihited to checkout an event!
-                      </Label>
-                      <DialogFooter>
-                        <DialogClose>
-                          <Button>Close</Button>
-                        </DialogClose>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                )}
-              </div>
-            </div>
+            {role !== 'organizer' ? (
+              <CheckoutDialog eventData={event} />
+            ) : (
+              <Dialog>
+                <DialogTrigger className="w-full cursor-not-allowed">
+                  <Button variant="default" disabled className="w-full">
+                    {new Date(event.endDate).getTime() <= new Date().getTime() ? "This Event is Ended !" : "Checkouts"}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Warning</DialogTitle>
+                    <Label>You are signed as organizer.</Label>
+                  </DialogHeader>
+                  <Label className="text-base">
+                    As an organizer you are probihited to checkout an event!
+                  </Label>
+                  <DialogFooter>
+                    <DialogClose>
+                      <Button>Close</Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
-
-          <div className="mx-auto max-w-md space-y-6 px-4 py-12">
+          {/* <div className="mx-auto max-w-md space-y-6 px-4 py-12">
             <div>
               <ReviewForm />
             </div>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </section>

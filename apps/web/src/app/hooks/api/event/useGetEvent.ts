@@ -6,8 +6,13 @@ import { axiosInstance } from '@/lib/axios';
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 
+interface EventDetail extends Omit<Event, 'startDate' | 'endDate'> {
+  startDate: Date;
+  endDate: Date;
+}
+
 const useGetEvent = (id: number) => {
-  const [data, setData] = useState<Event | null>(null);
+  const [data, setData] = useState<EventDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const getEvent = async () => {

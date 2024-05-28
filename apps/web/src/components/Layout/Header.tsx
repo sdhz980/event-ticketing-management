@@ -1,3 +1,4 @@
+'use client';
 import { cn } from '@/lib/utils';
 import { MobileSidebar } from '@/components/Layout/MobileSideBar';
 import Link from 'next/link';
@@ -5,8 +6,10 @@ import { Boxes } from 'lucide-react';
 import { UserNav } from '@/components/Layout/UserNav';
 import { Label } from '../ui/label';
 import { useAppSelector } from '@/app/redux/hook';
+import ThemeButton from '../ui/ThemeButton';
 
 export default function Header() {
+  const currentTheme = localStorage.getItem('theme');
   const userData = useAppSelector((state) => state.user);
   const user = {
     name: `${userData.firstName} ${userData.lastName}`,
@@ -27,11 +30,13 @@ export default function Header() {
         <div className={cn('block md:!hidden')}>
           <MobileSidebar />
         </div>
-
-        <div className="flex items-center gap-2">
-          {/* <ThemeToggle /> */}
-          <Label>sadam@email.com</Label>
-          <UserNav user={user} />
+        <div className="flex gap-4 flex-row">
+          <div className="flex items-center gap-2">
+            {/* <ThemeToggle /> */}
+            <Label>sadam@email.com</Label>
+            <UserNav user={user} />
+          </div>
+          <ThemeButton />
         </div>
       </nav>
     </div>

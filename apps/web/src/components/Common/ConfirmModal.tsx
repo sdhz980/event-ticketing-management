@@ -53,7 +53,7 @@ export const ConfirmModal = ({
         </DialogHeader>
         <div className="flex items-center gap-x-2">
           <span>Is all forms is inputed correctly</span>
-          <span className="text-lg font-bold text-green-500">{name}</span>?
+          <span className="text-lg font-bold text-primary">{name}</span>?
         </div>
         <div className="flex w-full items-center justify-end space-x-2 pt-6">
           <Button disabled={loading} variant="outline" onClick={onClose}>

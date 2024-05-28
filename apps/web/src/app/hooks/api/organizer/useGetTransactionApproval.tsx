@@ -1,15 +1,15 @@
 import { axiosInstance } from '@/app/lib/axios';
 import { useAppSelector } from '@/app/redux/hook';
-import { Event , Transaction } from '@/app/types/event.type';
+import { Event, Transaction } from '@/app/types/event.type';
 import { useEffect, useState } from 'react';
 
 interface EventResponse {
-  title : string;
-  transaction : Transaction[];
+  title: string;
+  transaction: Transaction[];
 }
 
 interface Response {
-    data : EventResponse[];
+  data: EventResponse[];
 }
 
 const useGetTransactionApproval = () => {
@@ -36,7 +36,7 @@ const useGetTransactionApproval = () => {
     setIsLoading(false);
   }, [data]);
 
-  return { data, isLoading };
+  return { data, isLoading, refetch: getTransactionApproval };
 };
 
 export default useGetTransactionApproval;

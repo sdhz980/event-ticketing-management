@@ -3,9 +3,8 @@
 import { useAppDispatch, useAppSelector } from '@/app/redux/hook';
 import { logoutAction } from '@/app/redux/slices/userSlice';
 import { useRouter } from 'next/navigation';
-import { Input } from './ui/input';
-import { Menu, MoonIcon, MusicIcon, SearchIcon, SunIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Menu, MusicIcon } from 'lucide-react';
+import { useEffect } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,11 +15,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from './ui/button';
 import Link from 'next/link';
-import { useTheme } from 'next-themes';
+import ThemeButton from './ui/ThemeButton';
 
 const Navbar = () => {
-  const [userTheme, setUserTheme] = useState<'light' | 'dark'>('light');
-  const { setTheme } = useTheme();
   const dispatch = useAppDispatch();
   const router = useRouter();
   const user = useAppSelector((state) => state.user);
@@ -42,19 +39,8 @@ const Navbar = () => {
         <MusicIcon className="h-6 w-6" />
         <span className="sr-only">TuneTix</span>
       </Link>
-      <Button
-        onClick={() => {
-          setTheme(userTheme);
-          setUserTheme(userTheme === 'light' ? 'dark' : 'light');
-        }}
-        variant="outline"
-        size="icon"
-      >
-        <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        <span className="sr-only">Toggle theme</span>
-      </Button>
-      <nav>
+      <nav className='flex flex-row gap-4'>
+        <ThemeButton/>
         {Boolean(user.userId) ? (
           <div className="md:block hidden">
             <div className="flex items-center gap-4">

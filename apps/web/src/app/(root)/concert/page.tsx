@@ -25,7 +25,7 @@ const Concert = () => {
   const [page, setPage] = useState<number>(1);
   const { data: events, meta } = useGetEvents({
     page,
-    take: 10,
+    take: 6,
   });
 
   const handleChangePaginate = ({ selected }: { selected: number }) => {
@@ -99,7 +99,7 @@ const Concert = () => {
           </DropdownMenu>
         </div>
       </div>
-      <div id='list-events' className="container mx-auto grid grid-cols-1 gap-8 py-8 md:grid-cols-4">
+      <div id='list-events' className="container mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(100%,15em),1fr))] gap-8 py-8">
         {events.map((event, index) => {
           return (
             <div id={'event-'+String(index)}>

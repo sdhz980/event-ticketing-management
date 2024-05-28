@@ -20,14 +20,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { format } from 'date-fns';
 import { Check, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 const DashboardTransactionPage = () => {
-  const router = useRouter();
   const [month, setMonth] = useState(new Date());
-  const { data, isLoading } = useGetTransactionApproval();
-  const { approvalAction } = useApprovalAction();
+  const { data, isLoading, refetch } = useGetTransactionApproval();
+  const { approvalAction, loading } = useApprovalAction();
   const chartData = [
     {
       name: 'jan',
@@ -119,40 +117,14 @@ const DashboardTransactionPage = () => {
     },
   ];
 
-  const handleActionApprove = async (uuid: string) => {
-    try {
-      const approve = approvalAction({ uuid, status: 'success' });
-      approve
-        .finally(() => {
-          router.replace('/organizer-dashboard/transaction');
-        })
-        .then(() => {
-          router.replace('/organizer-dashboard/transaction');
-        });
-    } catch (error) {}
-  };
-  const handleActionDiscard = async (uuid: string) => {
-    try {
-      const discard = approvalAction({ uuid, status: 'cancelled' });
-
-      discard
-        .finally(() => {
-          router.replace('/organizer-dashboard/transaction');
-        })
-        .then(() => {
-          router.replace('/organizer-dashboard/transaction');
-        });
-    } catch (error) {}
-  };
-
   const priceFormat = new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
   });
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
+    refetch();
+  }, [loading]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -195,17 +167,27 @@ const DashboardTransactionPage = () => {
                                 </TableCaption>
                                 <TableHeader>
                                   <TableRow>
-                                    <TableHead className="w-[100px]">
+                                    <TableHead className="w-[100px] text-primary">
                                       Event
                                     </TableHead>
-                                    <TableHead>UUID</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Transaction Date</TableHead>
-                                    <TableHead className="text-right">
+                                    <TableHead className="text-primary">
+                                      UUID
+                                    </TableHead>
+                                    <TableHead className="text-primary">
+                                      Status
+                                    </TableHead>
+                                    <TableHead className="text-primary">
+                                      Transaction Date
+                                    </TableHead>
+                                    <TableHead className="text-right text-primary">
                                       Total Amount
                                     </TableHead>
-                                    <TableHead>Acc</TableHead>
-                                    <TableHead>Discard</TableHead>
+                                    <TableHead className="text-primary">
+                                      Acc
+                                    </TableHead>
+                                    <TableHead className="text-primary">
+                                      Discard
+                                    </TableHead>
                                   </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -237,9 +219,10 @@ const DashboardTransactionPage = () => {
                                                 <TableCell>
                                                   <Button
                                                     disabled
-                                                    className="p-4"
+                                                    className="p-4 bg-muted cursor-not-allowed"
                                                   >
                                                     <Check
+                                                      className="text-muted-foreground"
                                                       width={18}
                                                       height={18}
                                                     />
@@ -248,9 +231,13 @@ const DashboardTransactionPage = () => {
                                                 <TableCell>
                                                   <Button
                                                     disabled
-                                                    className="p-4"
+                                                    className="p-4 bg-muted cursor-not-allowed"
                                                   >
-                                                    <X width={18} height={18} />
+                                                    <X
+                                                      width={18}
+                                                      height={18}
+                                                      className="text-muted-foreground"
+                                                    />
                                                   </Button>
                                                 </TableCell>
                                               </>
@@ -259,13 +246,15 @@ const DashboardTransactionPage = () => {
                                                 <TableCell>
                                                   <Button
                                                     onClick={() =>
-                                                      handleActionApprove(
-                                                        values.uuid,
-                                                      )
+                                                      approvalAction({
+                                                        uuid: values.uuid,
+                                                        status: 'success',
+                                                      })
                                                     }
-                                                    className="p-4 bg-green-500"
+                                                    className="p-4 bg-primary hover:bg-primary-foreground group"
                                                   >
                                                     <Check
+                                                      className="text-primary-foreground group-hover:text-primary"
                                                       width={18}
                                                       height={18}
                                                     />
@@ -274,13 +263,18 @@ const DashboardTransactionPage = () => {
                                                 <TableCell>
                                                   <Button
                                                     onClick={() =>
-                                                      handleActionDiscard(
-                                                        values.uuid,
-                                                      )
+                                                      approvalAction({
+                                                        uuid: values.uuid,
+                                                        status: 'cancelled',
+                                                      })
                                                     }
-                                                    className="p-4 bg-red-500"
+                                                    className="p-4 bg-destructive group"
                                                   >
-                                                    <X width={18} height={18} />
+                                                    <X
+                                                      width={18}
+                                                      height={18}
+                                                      className="text-destructive-foreground group-hover:text-destructive"
+                                                    />
                                                   </Button>
                                                 </TableCell>
                                               </>

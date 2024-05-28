@@ -50,12 +50,12 @@ export const createUserTransactionService = async function (
         if (!event) throw new Error('Event is not valid');
         if (event.booked >= event.limit)
           throw new Error('Event ticket is sold out');
-        if (body.qty > event.limit - event.booked)
+        if (body.qty > (event.limit - event.booked))
           throw new Error('Event ticket is not enough');
 
         const voucherCard = await prisma.voucher.findFirst({
           where: {
-            id: body.voucherId,
+            id: body.voucherId || undefined,
             userId: body.userId,
             endDate: {
               gte: new Date(),

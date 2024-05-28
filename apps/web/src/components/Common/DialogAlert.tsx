@@ -52,8 +52,8 @@ export const DialogAlert = ({
           </div>
         </DialogHeader>
         <div className="flex items-center gap-x-2">
-          <DialogDescription className='text-base font-normal text-black'>{description}</DialogDescription>
-          <span className="text-lg font-bold text-green-500">{name}</span>
+          <DialogDescription className='text-base font-normal text-primary'>{description}</DialogDescription>
+          <span className="text-lg font-bold text-primary">{name}</span>
         </div>
         <div className="flex w-full items-center justify-end space-x-2 pt-6">
           <Button variant="destructive" onClick={onClose}>

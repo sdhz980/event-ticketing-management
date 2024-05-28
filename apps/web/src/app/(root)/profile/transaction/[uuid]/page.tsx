@@ -22,21 +22,79 @@ import { useGetTransactionDetail } from '@/app/hooks/api/user/useGetTransactionD
 import { format } from 'date-fns';
 import { DialogAlert } from '@/components/Common/DialogAlert';
 import usePostTransactionProof from '@/app/hooks/api/user/usePostTransactionProof';
+import Image from 'next/image';
+import { appConfig } from '@/utils/config';
+import { useRouter } from 'next/navigation';
+
+const calculateVoucher = (
+  price: number,
+  qty: number,
+  discount: number | undefined,
+  maxDiscount: number | undefined,
+): number => {
+  discount = discount ? discount : 0;
+  maxDiscount = maxDiscount ? maxDiscount : 0;
+  if ((price * qty) / discount >= maxDiscount) return maxDiscount;
+  return (price * qty) / discount;
+};
+
+const calculateTotal = (
+  isVoucherUse: boolean,
+  isPointsUse: boolean,
+  percentage: number | undefined,
+  maxDiscount: number | undefined,
+  points: number,
+  price: number,
+  qty: number,
+): number => {
+  if (isPointsUse && isVoucherUse)
+    return (
+      price * qty -
+      (calculateVoucher(price, qty, 1, points) +
+        calculateVoucher(
+          price,
+          qty,
+          percentage ? percentage : 0,
+          maxDiscount ? maxDiscount : 0,
+        ))
+    );
+  if (isVoucherUse)
+    return (
+      price * qty -
+      calculateVoucher(
+        price,
+        qty,
+        percentage ? percentage : 0,
+        maxDiscount ? maxDiscount : 0,
+      )
+    );
+  if (isPointsUse) return price * qty - calculateVoucher(price, qty, 1, points);
+  return price * qty;
+};
 
 const TransactionDetail = ({ params }: { params: { uuid: string } }) => {
+  const router = useRouter();
   const user = useAppSelector((state) => state.user);
   const { data, isLoading } = useGetTransactionDetail(params.uuid);
   const { postTransactionProof } = usePostTransactionProof();
   const [proofImage, setProofImage] = useState<File[]>([]);
   const [alert, setAlert] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
   const priceFormat = new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
   });
-
   const handleSubmit = () => {
     if (data) {
-      postTransactionProof(data.event.id, data.uuid, proofImage);
+      postTransactionProof(data.event.id, data.uuid, proofImage)
+        .catch(() => setError(true))
+        .then(() => {
+          setSuccess(true);
+          setTimeout(() => {
+            router.push('/profile');
+          }, 3000);
+        });
     }
   };
 
@@ -74,17 +132,30 @@ const TransactionDetail = ({ params }: { params: { uuid: string } }) => {
                 </div>
 
                 <div className="ml-auto flex items-center gap-1">
-                  <CardTitle className="text-lg">Cancel order in : </CardTitle>
-                  <Countdown
-                    className={cn(
-                      `text-lg font-semibold text-card-foreground ${
-                        new Date().valueOf() !== new Date().valueOf() + 86400000
-                          ? ''
-                          : 'text-red-500'
-                      }`,
-                    )}
-                    date={new Date(data.createdAt).valueOf() + 86400000}
-                  />
+                  {data.status != 'pending' ? (
+                    <>
+                      <CardTitle className="text-lg">
+                        Your status order is : {data.status}
+                      </CardTitle>
+                    </>
+                  ) : (
+                    <>
+                      <CardTitle className="text-lg">
+                        Cancel order in :{' '}
+                      </CardTitle>
+                      <Countdown
+                        className={cn(
+                          `text-lg font-semibold text-card-foreground ${
+                            new Date().valueOf() !==
+                            new Date().valueOf() + 86400000
+                              ? ''
+                              : 'text-red-500'
+                          }`,
+                        )}
+                        date={new Date(data.createdAt).valueOf() + 86400000}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             </CardHeader>
@@ -118,32 +189,84 @@ const TransactionDetail = ({ params }: { params: { uuid: string } }) => {
                       %)
                     </span>
                     <span>
-                      {priceFormat.format(
-                        data.transactionUserReward[0]
-                          ? data.transactionUserReward[0].userReward.reward
-                              .percentage *
-                              ((data.event.price / 100) * data.qty)
-                          : 0,
-                      )}
+                      {data.transactionUserReward[0]
+                        ? priceFormat.format(
+                            calculateVoucher(
+                              data.event.price,
+                              data.qty,
+                              data.transactionUserReward[0].userReward.reward
+                                .percentage,
+                              data.transactionUserReward[0].userReward.reward
+                                .max_nominal,
+                            ),
+                          )
+                        : '-'}
                     </span>
                   </li>
 
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Points used</span>
-                    <span>{priceFormat.format(data.pointUsed)}</span>
+                    <span>
+                      {data.pointUsed
+                        ? priceFormat.format(data.pointUsed)
+                        : '-'}
+                    </span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted-foreground"></span>
+                    <span>
+                      -{' '}
+                      {data.transactionUserReward[0]
+                        ? priceFormat.format(
+                            calculateVoucher(
+                              data.event.price,
+                              data.qty,
+                              data.transactionUserReward[0].userReward.reward
+                                .percentage,
+                              data.transactionUserReward[0].userReward.reward
+                                .max_nominal,
+                            ),
+                          )
+                        : ''}{' '}
+                      {data.pointUsed > 1
+                        ? `${priceFormat.format(data.pointUsed)}`
+                        : ''}
+                    </span>
                   </li>
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span>{priceFormat.format(data.total)}</span>
                   </li>
 
-                  <li className="flex items-center justify-between">
-                    <span className="text-muted-foreground"></span>
-                    <span>- {priceFormat.format(data.pointUsed)}</span>
-                  </li>
                   <li className="flex items-center justify-between font-semibold">
                     <span className="text-muted-foreground">Total</span>
-                    <span>{priceFormat.format(data.total)}</span>
+                    <span>
+                      {data.transactionUserReward[0]
+                        ? priceFormat.format(
+                            calculateTotal(
+                              Boolean(data.transactionUserReward[0]),
+                              Boolean(data.pointUsed > 1),
+                              data.transactionUserReward[0].userReward.reward
+                                .percentage,
+                              data.transactionUserReward[0].userReward.reward
+                                .max_nominal,
+                              data.pointUsed,
+                              data.event.price,
+                              data.qty,
+                            ),
+                          )
+                        : priceFormat.format(
+                            calculateTotal(
+                              false,
+                              Boolean(data.pointUsed),
+                              0,
+                              0,
+                              data.pointUsed,
+                              data.event.price,
+                              data.qty,
+                            ),
+                          )}
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -209,10 +332,28 @@ const TransactionDetail = ({ params }: { params: { uuid: string } }) => {
                     }}
                   />
                 </div>
-                <Button onClick={() => dropzoneRef.current.click()}>
+                {data.paymentProof ? (
+                  <>
+                    <Card className="relative md:h-[320px] h-[200px] w-full rounded-md border">
+                      <Image
+                        src={`${appConfig.baseUrl}/assets${data.paymentProof}`}
+                        alt="proof"
+                        fill
+                        objectFit="contain"
+                      />
+                    </Card>
+                  </>
+                ) : (
+                  ''
+                )}
+                <Button
+                  disabled={Boolean(data.paymentProof)}
+                  onClick={() => dropzoneRef.current.click()}
+                >
                   Choose Payment Proof Image
                 </Button>
                 <Button
+                  disabled={Boolean(data.paymentProof)}
                   onClick={() => {
                     if (proofImage.length > 0) {
                       handleSubmit();
@@ -221,8 +362,17 @@ const TransactionDetail = ({ params }: { params: { uuid: string } }) => {
                     }
                   }}
                 >
-                  Submit Payment Proof
+                  {data.paymentProof
+                    ? 'You already submit the proof'
+                    : 'Submit Payment Proof'}
                 </Button>
+                {data.paymentProof ? (
+                  <div className="grid w-full justify-center">
+                    <Label>Please wait for event publisher approve</Label>
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
             </CardContent>
           </Card>
@@ -231,6 +381,22 @@ const TransactionDetail = ({ params }: { params: { uuid: string } }) => {
             description="Please upload payment image proof before submit!"
             isOpen={alert}
             onClose={() => setAlert(false)}
+          />
+          <DialogAlert
+            title="Success upload proofImage"
+            description="Please wait for publisher approve,close this dialog for redirect to your profile"
+            isOpen={success}
+            onClose={() => {
+              setSuccess(false);
+            }}
+          />
+          <DialogAlert
+            title="Error"
+            description="Something is error with the server"
+            isOpen={error}
+            onClose={() => {
+              setError(false);
+            }}
           />
         </div>
       </>

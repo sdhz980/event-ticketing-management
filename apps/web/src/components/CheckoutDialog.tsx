@@ -24,6 +24,11 @@ import { useCreateTransactionEvent } from '@/app/hooks/api/user/useTransactionEv
 import { useAppSelector } from '@/app/redux/hook';
 import { Switch } from './ui/switch';
 
+
+interface EventDetail extends Omit<Event, 'startDate' | 'endDate'> {
+  startDate: Date;
+  endDate: Date;
+}
 const calculateVoucher = (
   price: number,
   qty: number,
@@ -55,7 +60,7 @@ const calculateTotal = (
   return price * qty;
 };
 
-const CheckoutDialog = ({ eventData }: { eventData: Event }) => {
+const CheckoutDialog = ({ eventData }: { eventData: EventDetail }) => {
   const router = useRouter();
   const user = useAppSelector((state) => state.user);
   const { data } = useGetUserVoucher();
@@ -96,7 +101,7 @@ const CheckoutDialog = ({ eventData }: { eventData: Event }) => {
         ? calculateVoucher(eventData.price, qty, 1, user.points)
         : 0,
     };
-    alert(JSON.stringify(data));
+    // alert(JSON.stringify(data));
     createTransactionEvent(data).then((res) => {
       router.push(`/profile/transaction/${res.data}`);
     });
@@ -110,7 +115,7 @@ const CheckoutDialog = ({ eventData }: { eventData: Event }) => {
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline">Checkout</Button>
+          <Button variant="default">Checkout</Button>
         </DialogTrigger>
         <DialogContent className="max-w-[600px]">
           <DialogHeader>
