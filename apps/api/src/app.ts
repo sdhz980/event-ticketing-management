@@ -89,6 +89,10 @@ export default class App {
       res.send(`Hello, Purwadhika Student !`);
     });
 
+    this.app.get('/', (req: Request, res: Response) => {
+      res.send(`Hello, Purwadhika Student !`);
+    });
+
     this.app.use('/api/user', userRouter.getRouter());
     this.app.use('/api/auth', authRouter.getRouter());
     this.app.use('/api/organizer', organizerRouter.getRouter());
@@ -97,8 +101,8 @@ export default class App {
   }
 
   public start(): void {
-    this.app.listen(PORT, () => {
-      console.log(`  ➜  [API] Local:   http://localhost:${PORT}/`);
+    this.app.listen(PORT || 5000, () => {
+      console.log(`  ➜  [API] Local:   http://localhost:${PORT || 5000}/`);
     });
   }
 }
