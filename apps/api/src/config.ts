@@ -10,6 +10,6 @@ config({ path: resolve(__dirname, `../${envFile}.local`), override: true });
 
 // Load all environment variables from .env file
 
-export const PORT = process.env.PORT;
-export const DATABASE_URL = process.env.POSTGRES_PRISMA_URL;
-export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || 'S3CR3TK3Y';
+export const PORT = process.env.PORT || 5000;
+export const DATABASE_URL = process.env.DATABASE_URL;
+export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "S3CR3TK3Y";

@@ -2,9 +2,9 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "server.ts",
+  "main": "./src/index.ts",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register src/index.ts",
+    "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register ./src/index.ts",
     "build": "tsc && tsc-alias",
     "start": "nodemon src/index.ts",
     "serve": "cross-env NODE_ENV=production node dist/index.js",
